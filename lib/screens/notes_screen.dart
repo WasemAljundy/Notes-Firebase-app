@@ -31,6 +31,10 @@ class _NotesScreenState extends State<NotesScreen> with Helpers {
             icon: const Icon(Icons.note_add),
           ),
           IconButton(
+            onPressed: () => Navigator.pushNamed(context, '/images_screen'),
+            icon: const Icon(Icons.image),
+          ),
+          IconButton(
             onPressed: () async {
               await FbAuthController().signOut();
               // ignore: use_build_context_synchronously
@@ -106,7 +110,9 @@ class _NotesScreenState extends State<NotesScreen> with Helpers {
   Future<void> delete({required String path}) async {
     bool deleted = await FbFireStoreController().delete(path: path);
     String message = deleted ? 'Note Deleted Successfully' : 'Delete Failed!';
-    showSnackBar(context: context, message: message, error: !deleted);
+    if (context.mounted) {
+      showSnackBar(context: context, message: message, error: !deleted);
+    }
   }
 
   Note mapNote(QueryDocumentSnapshot snapshot) {
@@ -116,5 +122,4 @@ class _NotesScreenState extends State<NotesScreen> with Helpers {
     note.details = snapshot.get('details');
     return note;
   }
-
 }
